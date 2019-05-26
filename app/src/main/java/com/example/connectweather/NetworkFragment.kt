@@ -24,11 +24,16 @@ class NetworkFragment:Fragment(){
 
     companion object{
         fun getInstance(fragmentManager: FragmentManager,url:String):NetworkFragment{
-            val networkFragment =NetworkFragment()
-            val args= Bundle()
-            args.putString(URL_KEY,url)
-            networkFragment.arguments=args
-            fragmentManager.beginTransaction().add(networkFragment, TAG).commit()
+            var networkFragment = fragmentManager.findFragmentByTag(TAG) as? NetworkFragment
+            if (networkFragment == null){
+                networkFragment= NetworkFragment()
+                networkFragment.arguments=Bundle().apply {
+                    putString(URL_KEY,url)
+                }
+                fragmentManager.beginTransaction()
+                    .add(networkFragment,TAG)
+                    .commit()
+            }
             return networkFragment
         }
     }
@@ -36,6 +41,7 @@ class NetworkFragment:Fragment(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         urlString=arguments?.getString(URL_KEY)
+        retainInstance = true
     }
 
     override fun onAttach(context: Context?) {
